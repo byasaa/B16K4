@@ -11,7 +11,7 @@ function usernameValidity($username)
 }
 function passwordValidity($password)
 {
-    if(preg_match('/^[a-zA-Z]{9}([0-9])$/',$password)){
+    if(preg_match('/^\S*(?=\S{9,})(?=\S*[\d])(?=\S*[\W])\S*$/',$password)){
         return true;
     }else{
         echo 'Format Password Salah';
@@ -19,4 +19,5 @@ function passwordValidity($password)
 }
 echo usernameValidity('muh.abiyasa');
 echo '<br>';
-echo passwordValidity('abcdefghi1');
+echo passwordValidity('1@asbabna');
+echo '<br>';
