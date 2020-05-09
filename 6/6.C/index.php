@@ -58,8 +58,8 @@
                     <td><?php echo $item['category'];?></td>
                     <td><?php echo idr_format($item['price']);?></td>
                     <td>
-                        <button class="btn btn-link" data-toggle="modal" data-target="#formEdit" ><span class="fa fa-fw fa-edit"></span></button>
-                        <button class="btn btn-link" data-toggle="modal" data-target="#formHapus" ><span class="fa fa-fw fa-trash"></span></button>
+                        <button class="btn btn-link" data-toggle="modal" data-target="#formEdit" onclick="getData(<?= $item['id'] ?>,<?= $item['cashier']?>,<?= $item['category']?>,<?= $item['product'] ?>,<?= $item['price'] ?>)"><span class="fa fa-fw fa-edit"></span></button>
+                        <a class="btn btn-link" href="./?delete=<?php echo $item['id']; ?>"><span class="fa fa-fw fa-trash"></span></a>
                     </td>
                 </tr>
                     <?php }?>
@@ -123,6 +123,16 @@
             }
         }
     ?>
+    <script>
+        function getData(id, cashier, category, product,price){
+            document.getElementById('id').value=id;
+            document.getElementById('cashier').value=cashier;
+            document.getElementById('category').value=category;
+            document.getElementById('product').value=product;
+            document.getElementById('price').value=price;
+            document.getElementById('updateForm').action="./";
+        }
+    </script>
     <div id="formEdit" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -131,9 +141,10 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <form action="./" method="POST">
+                    <form action="./" method="POST" id="updateForm">
+                    <input type="hidden" name="product_id" value="" id="product_id">
                         <div class="form-group">
-                            <select name="cashier" id="cashir" class="form-control">
+                            <select name="cashier" id="cashier" class="form-control">
                                 <option value="1">Pevita</option>
                             </select>
                         </div>
@@ -154,6 +165,12 @@
             </div>
         </div>
     </div>
+    <?php 
+        if (isset($_GET['delete'])) {
+            $stmt = $conn->prepare("DELETE FROM product WHERE id=?");
+            $stmt->bind_param("s",$_GET['delete']);
+            $stmt->execute();
+    ?>
     <div id="formHapus" class="modal fade" role="dialog">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -161,7 +178,7 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
 				<div class="modal-body mx-auto">
-                    <h3>Data Pevita</h3>
+                    <h3>Data</h3>
                     <div class="pl-4 pb-2">
                         <img src="img/checklist.png" width="110" height="110" alt="Success">
                     </div>
@@ -170,5 +187,12 @@
 			</div>
 		</div>
     </div>
+    <script>
+        $(window).on('load',function(){
+        $('#formHapus').modal('show');
+        location.assign("./");
+    });
+    </script>
+    <?php }?>
 </body>
 </html>
